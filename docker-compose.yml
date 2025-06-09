@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - AUTH_SECRET=${AUTH_SECRET}
+      - AUTH_ORIGIN=http://localhost:3000
+      - AUTHENTIK_ISSUER=${AUTHENTIK_ISSUER}
+      - AUTHENTIK_CLIENT_ID=${AUTHENTIK_CLIENT_ID}
+      - AUTHENTIK_CLIENT_SECRET=${AUTHENTIK_CLIENT_SECRET}
+      - DB_HOST=redis
+      - DB_PORT=6379
+    depends_on:
+      - redis
+    networks:
+      - app-network
+      - authentik_default  # Connect to Authentik's network
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+  authentik_default:
+    external: true
+
+volumes:
+  redis-data:

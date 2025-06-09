@@ -1,0 +1,39 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "start": "node .output/server/index.mjs",
+    "docker:build": "docker-compose up --build",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:restart": "docker-compose restart",
+    "docker:clean": "docker-compose down -v --remove-orphans"
+  },
+  "dependencies": {
+    "@auth/core": "^0.39.1",
+    "@pinia/nuxt": "^0.10.1",
+    "@sidebase/nuxt-auth": "^0.10.1",
+    "@tailwindcss/vite": "^4.1.3",
+    "nuxt": "^3.16.2",
+    "pg": "^8.14.1",
+    "pinia": "^3.0.1",
+    "primeicons": "^7.0.0",
+    "primevue": "^3.53.1",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@types/pg": "^8.11.11",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.3"
+  }
+}
