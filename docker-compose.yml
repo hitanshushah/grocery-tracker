@@ -7,33 +7,37 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - AUTH_SECRET=${AUTH_SECRET}
-      - AUTH_ORIGIN=http://localhost:3000
-      - AUTHENTIK_ISSUER=${AUTHENTIK_ISSUER}
-      - AUTHENTIK_CLIENT_ID=${AUTHENTIK_CLIENT_ID}
-      - AUTHENTIK_CLIENT_SECRET=${AUTHENTIK_CLIENT_SECRET}
-      - DB_HOST=redis
-      - DB_PORT=6379
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=grocery_tracker
     depends_on:
-      - redis
+      - postgres
     networks:
       - app-network
-      - authentik_default  # Connect to Authentik's network
+    env_file:
+      - .env
 
-  redis:
-    image: redis:alpine
+
+  postgres:
+    image: postgres:15-alpine
     ports:
-      - "6380:6379"
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=grocery_tracker
     volumes:
-      - redis-data:/data
+      - postgres-data:/var/lib/postgresql/data
     networks:
       - app-network
+    env_file:
+      - .env
+      
+volumes:
+  postgres-data:
 
 networks:
   app-network:
     driver: bridge
-  authentik_default:
-    external: true
-
-volumes:
-  redis-data:

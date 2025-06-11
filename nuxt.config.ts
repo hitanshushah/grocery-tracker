@@ -3,30 +3,24 @@ import { defineNuxtConfig } from 'nuxt/config';
 
 export default defineNuxtConfig({
   runtimeConfig: {
-    public: {
-      authOrigin: process.env.AUTH_ORIGIN || 'http://localhost:3000',
-      authBaseURL: process.env.AUTH_BASE_URL || 'http://host.docker.internal:3000/api/auth'
-    },
-    AUTH_SECRET: process.env.AUTH_SECRET,
-    AUTHENTIK_CLIENT_ID: process.env.AUTHENTIK_CLIENT_ID,
-    AUTHENTIK_CLIENT_SECRET: process.env.AUTHENTIK_CLIENT_SECRET,
-    AUTHENTIK_ISSUER: process.env.AUTHENTIK_ISSUER
+    DB_HOST: process.env.DB_HOST,
+    DB_PORT: process.env.DB_PORT,
+    DB_USER: process.env.DB_USER,
+    DB_PASSWORD: process.env.DB_PASSWORD,
+    DB_NAME: process.env.DB_NAME,
+  },
+
+  app: {
+    baseURL: '/',
   },
 
   modules: [
-    '@sidebase/nuxt-auth',
     '@pinia/nuxt',
     '@nuxt/devtools'
   ],
 
-  auth: {
-    globalAppMiddleware: {
-      isEnabled: false
-    }
-  },
-
   build: {
-    transpile: ['primevue']
+    transpile: ['primevue'],
   },
 
   vite: {

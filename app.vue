@@ -1,54 +1,41 @@
 <template>
-  <div>
-    <div class="flex justify-between items-center p-4">
-      <h1>Grocery Tracker</h1>
-      <div>
-        <button 
-          v-if="status !== 'authenticated'" 
-          @click="signIn('authentik')" 
-          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Sign In with Authentik
-        </button>
-        <div v-else class="flex items-center gap-4">
-          <span>Welcome, {{ data?.user?.name || data?.user?.email }}!</span>
-          <button 
-            @click="signOut" 
-            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-          >
-            Sign Out
-          </button>
-        </div>
-      </div>
+  <div class="p-4">
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-xl font-bold">Grocerys Tracker</h1>
+      <button
+        class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+        @click="logout"
+      >
+        Logout
+      </button>
     </div>
 
-    <div v-if="status === 'authenticated'">
-      <div class="p-4">
-        <Card>
-          <template #title>Inventory</template>
-          <template #content>
-            <p class="text-gray-700">Milk, Bread, Eggs</p>
-          </template>
-        </Card>
-      </div>
-    </div>
-    <div v-else-if="status === 'loading'" class="p-4">
-      <p>Loading...</p>
-    </div>
-    <div v-else class="p-4">
-      <p>Please sign in to access your grocery inventory.</p>
-    </div>
+    <div v-if="error">Failed to load users: {{ error.message }}</div>
+    <div v-else-if="!users">Loading...</div>
+    <ul v-else class="space-y-2">
+      <li v-for="user in users" :key="user.id" class="border p-2 rounded">
+        <p><strong>Name:</strong> {{ user.name }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+      </li>
+    </ul>
   </div>
 </template>
 
-<script setup>
-import { useAuth } from '#imports'
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
 
-const { status, signIn, signOut, data } = useAuth()
+const users = ref([]);
+const error = ref<string | null>(null);
 
-// Debug logging (remove in production)
-watchEffect(() => {
-  console.log('Auth status:', status.value)
-  console.log('Auth data:', data.value)
-})
+onMounted(async () => {
+  try {
+    users.value = await $fetch('/api/users');
+  } catch (err: any) {
+    error.value = err.message || 'Error fetching users';
+  }
+});
+
+const logout = () => {
+  window.location.href = '/grocery-tracker/outpost.goauthentik.io/sign_out';
+};
 </script>
